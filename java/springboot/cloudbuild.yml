@@ -1,5 +1,5 @@
 steps:
-# This step install npm packages
+# This step install mvn packages
 - name: 'gcr.io/cloud-builders/mvn'
   id: Install
   args: ['clean','install','-f','java/springboot']

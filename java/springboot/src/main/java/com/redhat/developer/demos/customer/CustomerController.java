@@ -13,6 +13,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @RestController
 public class CustomerController {
 
@@ -33,18 +35,28 @@ public class CustomerController {
     }
 
     @RequestMapping("/")
-    public ResponseEntity<String> getCustomer(@RequestHeader("User-Agent") String userAgent, @RequestHeader(value = "user-preference", required = false) String userPreference) {
+    public ResponseEntity<String> getCustomer(@RequestHeader("User-Agent") String userAgent, @RequestHeader(value = "user-preference", required = false) String userPreference,
+                                              HttpRequest request) throws Exception {
         try {
+
             /**
              * Set baggage
              */
+            List<String> headers = request.getHeaders().get("x-api-key");
+            if(headers.size() == 0){
+                throw new Exception("There is no x-api-key");
+            }
+
             tracer.activeSpan().setBaggageItem("user-agent", userAgent);
             if (userPreference != null && !userPreference.isEmpty()) {
                 tracer.activeSpan().setBaggageItem("user-preference", userPreference);
             }
+            ResponseEntity<String> entity = new RestTemplate().exchange(
+                    remoteURL, HttpMethod.GET, new HttpEntity<Object>(headers),
+                    String.class);
 
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(remoteURL, String.class);
-            String response = responseEntity.getBody();
+//            ResponseEntity<String> responseEntity = restTemplate.getForEntity(remoteURL, String.class);
+            String response = entity.getBody();
             return ResponseEntity.ok(String.format(RESPONSE_STRING_FORMAT, response.trim()));
         } catch (HttpStatusCodeException ex) {
             logger.warn("Exception trying to get the response from preference service.", ex);
