@@ -69,7 +69,7 @@ public class CustomerController {
             logger.warn("Exception trying to get the response from preference service.", ex);
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .body(String.format(RESPONSE_STRING_FORMAT,
-                            String.format("%d %s", ex.getRawStatusCode(), createHttpErrorResponseString(ex))));
+                            String.format("%d some test %s", ex.getRawStatusCode(), createHttpErrorResponseString(ex))));
         } catch (RestClientException ex) {
             logger.warn("Exception trying to get the response from preference service.", ex);
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
