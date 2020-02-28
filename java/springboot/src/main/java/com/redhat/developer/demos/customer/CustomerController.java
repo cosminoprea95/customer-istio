@@ -67,9 +67,10 @@ public class CustomerController {
             return ResponseEntity.ok(String.format(RESPONSE_STRING_FORMAT, response.trim()));
         } catch (HttpStatusCodeException ex) {
             logger.warn("Exception trying to get the response from preference service.", ex);
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+
+            return ResponseEntity.status(ex.getRawStatusCode() == HttpStatus.UNAUTHORIZED.value() ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
                     .body(String.format(RESPONSE_STRING_FORMAT,
-                            String.format("%d some test %s", ex.getRawStatusCode(), createHttpErrorResponseString(ex))));
+                            String.format("%d %s", ex.getRawStatusCode(),createHttpErrorResponseString(ex))));
         } catch (RestClientException ex) {
             logger.warn("Exception trying to get the response from preference service.", ex);
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
