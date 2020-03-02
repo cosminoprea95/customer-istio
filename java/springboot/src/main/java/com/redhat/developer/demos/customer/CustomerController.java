@@ -62,7 +62,6 @@ public class CustomerController {
                     remoteURL, HttpMethod.GET, new HttpEntity<Object>(headers),
                     String.class);
 
-//            ResponseEntity<String> responseEntity = restTemplate.getForEntity(remoteURL, String.class);
             String response = entity.getBody();
             return ResponseEntity.ok(String.format(RESPONSE_STRING_FORMAT, response.trim()));
         } catch (HttpStatusCodeException ex) {
