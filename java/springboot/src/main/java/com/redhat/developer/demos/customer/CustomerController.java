@@ -44,7 +44,7 @@ public class CustomerController {
     }
 
     @RequestMapping("/")
-    public ResponseEntity<String> getCustomer(HttpServletRequest httpServletRequest,@RequestHeader("User-Agent") String userAgent, @RequestHeader(value = "user-preference", required = false) String userPreference,
+    public ResponseEntity<String> getCustomer(HttpServletRequest httpServletRequest, @RequestHeader("User-Agent") String userAgent, @RequestHeader(value = "user-preference", required = false) String userPreference,
                                               HttpServletRequest request) throws Exception {
         try {
 
@@ -61,12 +61,12 @@ public class CustomerController {
 //                tracer.activeSpan().setBaggageItem("user-preference", userPreference);
 //            }
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-            Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
-            while(headerNames.hasMoreElements()){
-                String headerKey = headerNames.nextElement();
-                headers.add(headerKey, httpServletRequest.getHeader(headerKey));
-            }
-
+            String header = httpServletRequest.getHeader("x-api-key");
+//            while(headerNames.hasMoreElements()){
+//                String headerKey = headerNames.nextElement();
+//                headers.add(headerKey, httpServletRequest.getHeader(headerKey));
+//            }
+            headers.add("x-api-key", header);
             ResponseEntity<String> entity = restTemplate.exchange(
                     remoteURL, HttpMethod.GET, new HttpEntity<>(headers),
                     String.class);
@@ -78,7 +78,7 @@ public class CustomerController {
 
             return ResponseEntity.status(ex.getRawStatusCode() == HttpStatus.UNAUTHORIZED.value() ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
                     .body(String.format(RESPONSE_STRING_FORMAT,
-                            String.format("%d %s", ex.getRawStatusCode(),createHttpErrorResponseString(ex))));
+                            String.format("%d %s", ex.getRawStatusCode(), createHttpErrorResponseString(ex))));
         } catch (RestClientException ex) {
             logger.warn("Exception trying to get the response from preference service.", ex);
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
