@@ -43,7 +43,7 @@ public class CustomerController {
     }
 
     @RequestMapping("/")
-    public ResponseEntity<String> getCustomer(@RequestHeader("User-Agent") String userAgent, @RequestHeader(value = "user-preference", required = false) String userPreference,
+    public ResponseEntity<String> getCustomer(HttpServletRequest httpServletRequest,@RequestHeader("User-Agent") String userAgent, @RequestHeader(value = "user-preference", required = false) String userPreference,
                                               HttpServletRequest request) throws Exception {
         try {
 
@@ -66,6 +66,11 @@ public class CustomerController {
 //                    String.class);
 
 //            String response = entity.getBody();
+            Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+            while(headerNames.hasMoreElements()){
+                String headerKey = headerNames.nextElement();
+                System.out.println(headerKey +" -> "+httpServletRequest.getHeader(headerKey));
+            }
             String response = restTemplate.getForObject(remoteURL, String.class);
             return ResponseEntity.ok(String.format(RESPONSE_STRING_FORMAT, response.trim()));
         } catch (HttpStatusCodeException ex) {
