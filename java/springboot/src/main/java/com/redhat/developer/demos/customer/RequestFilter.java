@@ -6,6 +6,8 @@ package com.redhat.developer.demos.customer;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
 
 public class RequestFilter implements Filter{
 
@@ -15,13 +17,15 @@ public class RequestFilter implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String token = httpServletRequest.getHeader(RequestContext.REQUEST_HEADER_NAME);
-
-        if (token == null || "".equals(token)) {
-            throw new IllegalArgumentException("Can't retrieve JWT Token");
+        Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+        HashMap<String, String> headers = new HashMap<>();
+        while(headerNames.hasMoreElements()) {
+            String headerKey = headerNames.nextElement();
+            String headerValue = httpServletRequest.getHeader(headerKey);
+            headers.put(headerKey,headerValue);
         }
 
-        RequestContext.getContext().setToken(token);
+        RequestContext.getContext().setHeaders(headers);
         chain.doFilter(request, response);
 
     }
