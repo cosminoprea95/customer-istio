@@ -64,7 +64,6 @@ public class CustomerController {
             Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
             while(headerNames.hasMoreElements()){
                 String headerKey = headerNames.nextElement();
-                System.out.println(headerKey +" -> "+httpServletRequest.getHeader(headerKey));
                 headers.add(headerKey, httpServletRequest.getHeader(headerKey));
             }
 
