@@ -1,12 +1,16 @@
 package com.redhat.developer.demos.customer;
 
 //import io.opentracing.Tracer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,12 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import sun.jvm.hotspot.memory.HeapBlock;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
-import java.util.List;
 
 @RestController
 public class CustomerController {
@@ -59,19 +60,19 @@ public class CustomerController {
 //            if (userPreference != null && !userPreference.isEmpty()) {
 //                tracer.activeSpan().setBaggageItem("user-preference", userPreference);
 //            }
-//            MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-////            headers.add("x-api-key", header);
-//            ResponseEntity<String> entity = restTemplate.exchange(
-//                    remoteURL, HttpMethod.GET, new HttpEntity<>(),
-//                    String.class);
-
-//            String response = entity.getBody();
+            MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
             Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
             while(headerNames.hasMoreElements()){
                 String headerKey = headerNames.nextElement();
                 System.out.println(headerKey +" -> "+httpServletRequest.getHeader(headerKey));
+                headers.add(headerKey, httpServletRequest.getHeader(headerKey));
             }
-            String response = restTemplate.getForObject(remoteURL, String.class);
+
+            ResponseEntity<String> entity = restTemplate.exchange(
+                    remoteURL, HttpMethod.GET, new HttpEntity<>(headers),
+                    String.class);
+
+            String response = entity.getBody();
             return ResponseEntity.ok(String.format(RESPONSE_STRING_FORMAT, response.trim()));
         } catch (HttpStatusCodeException ex) {
             logger.warn("Exception trying to get the response from preference service.", ex);
@@ -93,10 +94,10 @@ public class CustomerController {
         }
         return responseBody;
     }
-    @PostConstruct
-    public void addInterceptors() {
-        List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
-        interceptors.add(new RestTemplateInterceptor());
-        restTemplate.setInterceptors(interceptors);
-    }
+//    @PostConstruct
+//    public void addInterceptors() {
+//        List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
+//        interceptors.add(new RestTemplateInterceptor());
+//        restTemplate.setInterceptors(interceptors);
+//    }
 }
