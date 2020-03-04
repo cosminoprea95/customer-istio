@@ -10,7 +10,7 @@ steps:
   args:
   - 'build'
   - '-t'
-  - 'gcr.io/cirrus-initial-project/customer:latest'
+  - 'gcr.io/dev1-onb-playground-18fd/customer:latest'
   - 'java/springboot/'
 
 # This step pushes the image to Container Registry
@@ -20,7 +20,7 @@ steps:
   id: Push
   args:
   - 'push'
-  - 'gcr.io/cirrus-initial-project/customer:latest'
+  - 'gcr.io/dev1-onb-playground-18fd/customer:latest'
 - name: 'gcr.io/cloud-builders/kubectl'
   id: Deploy
   args:
@@ -28,8 +28,8 @@ steps:
   - '-f'
   - 'java/springboot/kubernetes.yml'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west1-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=istio-cluster'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=app'
 - name: 'gcr.io/cloud-builders/kubectl'
   id: Fetch changes
   args:
@@ -37,7 +37,7 @@ steps:
   - 'restart'
   - 'deployment/customer'
   - '-n'
-  - 'istio-tracing'
+  - 'istio-demo'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west1-b'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=istio-cluster'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=app'

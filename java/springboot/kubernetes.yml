@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: customer
-        image: gcr.io/cirrus-initial-project/customer:latest
+        image: gcr.io/dev1-onb-playground-18fd/customer:latest
         ports:
         - containerPort: 8080
         imagePullPolicy: Always
