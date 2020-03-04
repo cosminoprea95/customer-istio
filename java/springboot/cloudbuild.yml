@@ -28,8 +28,8 @@ steps:
   - '-f'
   - 'java/springboot/kubernetes.yml'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=app'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west1-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=istio-cluster'
 - name: 'gcr.io/cloud-builders/kubectl'
   id: Fetch changes
   args:
@@ -37,7 +37,7 @@ steps:
   - 'restart'
   - 'deployment/customer'
   - '-n'
-  - 'istio-demo'
+  - 'istio-tracing'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=app'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west1-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=istio-cluster'
