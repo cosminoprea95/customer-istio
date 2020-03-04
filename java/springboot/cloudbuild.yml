@@ -28,7 +28,7 @@ steps:
   - '-f'
   - 'java/springboot/kubernetes.yml'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-b'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
   - 'CLOUDSDK_CONTAINER_CLUSTER=app'
 - name: 'gcr.io/cloud-builders/kubectl'
   id: Fetch changes
@@ -39,5 +39,5 @@ steps:
   - '-n'
   - 'istio-demo'
   env:
-  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4-b'
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west4'
   - 'CLOUDSDK_CONTAINER_CLUSTER=app'
